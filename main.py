@@ -1,13 +1,11 @@
-# This is a sample Python script.
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 import random
 import pickle
-from affixation.Affixer import Affixer, RootFamily, SuffixFamily
+
+from WordValidator import WordValidator
+from affixation.Affixer import Affixer, RootFamily, SuffixFamily, AffixerException, Affixation
 
 
-def main():
+def create_affixation() -> Affixation:
     with open( "root_words_and_prefixes.p", "rb" ) as f:
         root_words_and_prefixes = pickle.load(f)
 
@@ -18,11 +16,20 @@ def main():
     random_suffix = random.choice(suffixes)
     chosen_root_family = RootFamily(**random_root)
     chosen_suffix_family = SuffixFamily(**random_suffix)
-    return Affixer.affix(chosen_root_family, chosen_suffix_family)
+
+    word_validator = WordValidator()
+    done = False
+    while not done:
+        try:
+            affixation: Affixation = Affixer.affix(chosen_root_family, chosen_suffix_family)
+            if not word_validator.is_alpha_numeric_word(affixation.word):
+                done = True
+            else:
+                print(f'Oops I created a real word | {affixation.word}')
+        except AffixerException:
+            pass
+    return affixation
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print(main())
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    print(create_affixation())
