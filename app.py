@@ -1,7 +1,7 @@
 import random
 import pickle
 
-from flask import Flask, escape, request, render_template
+from flask import Flask, render_template
 
 from WordValidator import WordValidator
 from affixation.Affixer import Affixer, RootFamily, SuffixFamily, AffixerException, Affixation
